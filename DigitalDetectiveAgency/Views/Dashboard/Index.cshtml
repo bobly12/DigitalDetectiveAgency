@@ -1,0 +1,87 @@
+@model dynamic 
+@{
+    ViewData["Title"] = "The Skeld Terminal";
+}
+
+<!-- Link our new pixelated stylesheet -->
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="container py-4">
+    
+    <!-- Emergency Meeting Header -->
+    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-4">
+        <div>
+            <h1 class="fw-bold m-0 text-uppercase terminal-title">🚨 MIRA HQ: SECURITY FEED</h1>
+            <p class="text-muted small m-0" style="font-family: monospace;">SYSTEM LOG // PORT: 5270 // STATUS: FAKE TASK DETECTED</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-danger p-2 px-3 text-uppercase fw-bold rounded-0 h5 tracking-wider">EMERGENCY BUTTON ACTIVE</span>
+        </div>
+    </div>
+
+    <!-- Crew Monitor Grid -->
+    <div class="row g-3 mb-4">
+        <!-- Tasks/Cases Card -->
+        <div class="col-md-4">
+            <div class="card skeld-card task-card h-100 text-white">
+                <div class="card-body">
+                    <h5 class="text-muted text-uppercase small" style="font-family: monospace;">&gt;_ Current Tasks</h5>
+                    <h2 class="fw-bold task-complete">2 Sabotages</h2>
+                    <p class="card-text small text-secondary">Fix wiring in Electrical and calibrate distributor matrix.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sus Card -->
+        <div class="col-md-4">
+            <div class="card skeld-card sus-card h-100 text-white">
+                <div class="card-body">
+                    <h5 class="text-muted text-uppercase small" style="font-family: monospace;">&gt;_ Scan Status</h5>
+                    <h2 class="fw-bold suspect-warning">Red is Sus</h2>
+                    <p class="card-text small text-secondary">Alibi verification: Claims they were downloading data in Cafeteria.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vitals Card -->
+        <div class="col-md-4">
+            <div class="card skeld-card vital-card h-100 text-white">
+                <div class="card-body">
+                    <h5 class="text-muted text-uppercase small" style="font-family: monospace;">&gt;_ Biometrics</h5>
+                    <h2 class="fw-bold emergency-red">1 Dead Body</h2>
+                    <p class="card-text small text-secondary">Reported in Weapons. Key evidence metadata securely archived.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Admin Room Log Stream -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card skeld-card text-white reactor-alert">
+                <div class="card-header bg-transparent border-secondary d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 text-uppercase small fw-bold text-danger">[!] REACTOR MONITOR LOG</h5>
+                    <span class="text-muted small" style="font-family: monospace;">Admin Map Tracker</span>
+                </div>
+                <div class="card-body">
+                    <p class="small text-white-50">Data pipeline integrity check completed. The database engine has mapped localized targets into the navigation mainframe:</p>
+                    
+                    <div class="p-3 mb-3 reactor-log small">
+                        <div>&gt; [OK] Crewmate entities initialized across the ship matrix.</div>
+                        <div>&gt; [OK] Seeder implanted 2 fully linked case files into Navigation logs.</div>
+                        <div>&gt; [WARN] Discrepancy caught: Card swipe failing logic loops.</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="/swagger" class="btn btn-outline-warning btn-sm text-uppercase fw-bold rounded-0 px-3">
+                            Access Admin Vent (Swagger)
+                        </a>
+                        <button onclick="alert('Who is the impostor?')" class="btn btn-danger btn-sm text-uppercase fw-bold rounded-0 px-3">
+                            Call Vote
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
