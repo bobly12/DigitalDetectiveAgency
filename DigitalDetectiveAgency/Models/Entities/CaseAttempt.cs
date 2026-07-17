@@ -1,29 +1,23 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace DigitalDetectiveAgency.Models.Entities
 {
     public class CaseAttempt
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
+        public int CaseId { get; init; }
+        
+        public string UserId { get; init; } = string.Empty; 
+        public ApplicationUser? User { get; init; } 
+        
+        public int AccusedSuspectId { get; init; }
+        public Suspect? AccusedSuspect { get; init; }
 
-        [Required]
-        public string UserId { get; set; } = string.Empty;
+        public int SubmittedEvidenceId { get; init; }
+        public int SubmittedWitnessId { get; init; }
 
-        [Required]
-        public int CaseId { get; set; }
+        public bool IsCorrect { get; init; }
+        public int ScoreAwarded { get; init; }
+        public DateTime AttemptedAt { get; init; } = DateTime.UtcNow;
 
-        [Required]
-        public int AccusedSuspectId { get; set; }
-
-        public bool IsCorrect { get; set; }
-
-        public int Score { get; set; }
-
-        public DateTime AttemptedAt { get; set; } = DateTime.UtcNow;
-
-        // Navigation Properties
-        public ApplicationUser User { get; set; } = null!;
-        public Case Case { get; set; } = null!;
-        public Suspect AccusedSuspect { get; set; } = null!;
+        public Case? Case { get; init; }
     }
 }

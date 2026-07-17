@@ -1,19 +1,137 @@
-@page
-@model DigitalDetectiveAgency.Views.Investigation.Board
+@model DigitalDetectiveAgency.Models.DTOs.Case.CaseDetailDto
 
-@{
-    Layout = null;
-}
+<div class="noir-desk-container">
+    <!-- Left Column: Case Index Directory -->
+    <aside class="case-directory">
+        <h2 class="directory-title">CASE FILE INDEX</h2>
+        <div class="directory-meta">
+            <p><strong>CASE CODE:</strong> #@Model.Id</p>
+            <p><strong>DIFFICULTY:</strong> @Model.Difficulty</p>
+        </div>
+        <hr class="noir-divider">
+        <nav class="directory-links">
+            <button class="dir-btn active" data-filter="all">01. ALL FILE MANIFOLDS</button>
+            <button class="dir-btn" data-filter="evidence">02. EVIDENCE CLUES</button>
+            <button class="dir-btn" data-filter="witness">03. TRANSCRIPTS</button>
+            <button class="dir-btn" data-filter="suspect">04. SUSPECT DOSSIERS</button>
+        </nav>
+    </aside>
 
-<!DOCTYPE html>
+    <!-- Center Column: The Dynamic Visual Desk Surface -->
+    <main class="desk-surface">
+        <header class="desk-header">
+            <h1 class="case-title">@Model.Title</h1>
+            <p class="desk-instruction">@Model.Description</p>
+        </header>
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
+        <section class="workspace-grid">
+            <!-- Dynamic Suspect Dossiers -->
+            @foreach (var suspect in Model.Suspects)
+            {
+                <div class="desk-card suspect-card clickable-card" data-type="suspect" data-id="@suspect.Id">
+                    <div class="card-tag">SUSPECT PROFILE</div>
+                    <h3 class="card-title">@suspect.Name</h3>
+                    <!-- Fixed: Aligned back to your functional model property -->
+                    <p class="card-body">@suspect.AlibiSummary</p>
+                </div>
+            }
+
+            <!-- Dynamic Evidence Items -->
+            @foreach (var evidence in Model.Evidences)
+            {
+                <div class="desk-card evidence-card clickable-card" data-type="evidence" data-id="@evidence.Id">
+                    <div class="card-tag">EVIDENCE LOG</div>
+                    <h3 class="card-title">@evidence.Title</h3>
+                    <p class="card-body">@evidence.Description</p>
+                </div>
+            }
+
+            <!-- Dynamic Witness Statements / Transcripts -->
+            @foreach (var witness in Model.Witnesses)
+            {
+                <div class="desk-card witness-card clickable-card" data-type="witness" data-id="@witness.Id">
+                    <div class="card-tag">TRANSCRIPT DEPOSITION</div>
+                    <h3 class="card-title">Statement: @witness.Name</h3>
+                    <p class="card-body">"@witness.Statement"</p>
+                </div>
+            }
+        </section>
+    </main>
+
+    <!-- Right Column: The Accusation Terminal -->
+    <section class="climax-dock">
+        <h2 class="dock-title">EXECUTE MANDATE</h2>
+        <p class="dock-warning">Submitting an unverified hypothesis will cause immediate case failure.</p>
+        
+        <form id="accusationForm">
+            <input type="hidden" id="caseIdInput" value="@Model.Id" />
+            
+            <div class="form-slot">
+                <label>ACCUSED CULPRIT</label>
+                <div id="slot-suspect" class="empty-slot">Select a Suspect Card</div>
+            </div>
+
+            <div class="form-slot">
+                <label>CONTRADICTORY EVIDENCE</label>
+                <div id="slot-evidence" class="empty-slot">Select an Evidence Card</div>
+            </div>
+
+            <div class="form-slot">
+                <label>FALSE WITNESS ALIBI</label>
+                <div id="slot-witness" class="empty-slot">Select a Transcript Card</div>
+            </div>
+
+            <button type="submit" class="submit-warrant-btn">AUTHORIZE ARREST WARRANT</button>
+        </form>
+        
+        <div id="terminal-feedback" class="terminal-box hidden"></div>
+    </section>
 </div>
-</body>
-</html>
+
+@section Scripts {
+    <!-- Load the external logic module -->
+    <script src="~/js/investigation-board.js" asp-append-version="true"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // 1. Dynamic Filtering System via Event Listeners (No inline attributes)
+            document.querySelectorAll('.dir-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.dir-btn').forEach(b => b.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    
+                    const filterType = e.currentTarget.getAttribute('data-filter');
+                    document.querySelectorAll('.desk-card').forEach(card => {
+                        if (filterType === 'all' || card.classList.contains(`${filterType}-card`)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // 2. Safe DOM binding for Card Clicks targeting your script module
+            document.querySelectorAll('.clickable-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const currentCard = e.currentTarget;
+                    const type = currentCard.getAttribute('data-type');
+                    const id = parseInt(currentCard.getAttribute('data-id'), 10);
+                    if (typeof window.selectItem === 'function') {
+                        window.selectItem(type, id, currentCard);
+                    }
+                });
+            });
+
+            // 3. Safe DOM binding for Form Submissions
+            const form = document.getElementById('accusationForm');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    if (typeof window.submitDeduction === 'function') {
+                        window.submitDeduction(e);
+                    }
+                });
+            }
+        });
+    </script>
+}

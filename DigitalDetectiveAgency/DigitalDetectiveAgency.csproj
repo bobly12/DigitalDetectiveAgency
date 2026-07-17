@@ -10,7 +10,6 @@
       <Folder Include="Areas\Views\CaseManagement\" />
       <Folder Include="Views\Account\" />
       <Folder Include="Views\Case\" />
-      <Folder Include="Views\Investigation\" />
       <Folder Include="Views\Profile\" />
       <Folder Include="wwwroot\images\" />
     </ItemGroup>

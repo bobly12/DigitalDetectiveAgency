@@ -6,6 +6,7 @@ using DigitalDetectiveAgency.Models.DTOs.CaseAttempt;
 using DigitalDetectiveAgency.Models.DTOs.Evidence; 
 using DigitalDetectiveAgency.Models.DTOs.Witness;
 using DigitalDetectiveAgency.Models.DTOs.Suspect;
+using SuspectDto = DigitalDetectiveAgency.Models.DTOs.Case.SuspectDto;
 
 namespace DigitalDetectiveAgency.Mappings
 {

@@ -1,0 +1,214 @@
+:root {
+    --noir-bg: #111215;
+    --noir-desk: #18191d;
+    --noir-paper: #f2ebd4; /* Aged typewriter paper tint */
+    --noir-ink: #242423;
+    --noir-accent: #bfa15f; /* Sepia Gold border flags */
+    --noir-text-muted: #8e9099;
+    --noir-danger: #9c3333;
+    --noir-terminal: #1a271e;
+    --noir-green: #4af626;
+}
+
+body {
+    background-color: var(--noir-bg);
+    color: #e3e4e8;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+}
+
+/* Master Grid Structure */
+.noir-desk-container {
+    display: grid;
+    grid-template-columns: 260px 1fr 320px;
+    height: 100vh;
+    background-color: var(--noir-bg);
+}
+
+/* Directory Drawer Side panel */
+.case-directory {
+    background-color: #0d0e10;
+    padding: 24px;
+    border-right: 1px solid #23252b;
+}
+.directory-title {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: var(--noir-accent);
+}
+.directory-meta {
+    font-size: 0.75rem;
+    color: var(--noir-text-muted);
+    line-height: 1.5;
+}
+.dir-btn {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--noir-text-muted);
+    text-align: left;
+    padding: 12px 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.dir-btn.active, .dir-btn:hover {
+    color: #ffffff;
+    border-left: 2px solid var(--noir-accent);
+    padding-left: 12px;
+}
+
+/* Center Desk Surface Layout */
+.desk-surface {
+    background-color: var(--noir-desk);
+    padding: 32px;
+    overflow-y: auto;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+}
+.case-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+.desk-instruction {
+    color: var(--noir-text-muted);
+    font-size: 0.95rem;
+}
+
+/* The Workspace Desk Cards */
+.workspace-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+}
+.desk-card {
+    background-color: var(--noir-paper);
+    color: var(--noir-ink);
+    padding: 20px;
+    border-radius: 2px;
+    font-family: 'Courier New', Courier, monospace;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Subtle staggered rotation to simulate papers scattered on a real desk */
+.workspace-grid .desk-card:nth-child(3n+1) { transform: rotate(-1deg); }
+.workspace-grid .desk-card:nth-child(3n+2) { transform: rotate(1.2deg); }
+.workspace-grid .desk-card:nth-child(3n+3) { transform: rotate(-0.5deg); }
+
+.desk-card:hover {
+    transform: scale(1.03) rotate(0deg) !important;
+    box-shadow: 8px 8px 25px rgba(0, 0, 0, 0.6);
+    z-index: 10;
+}
+.desk-card.selected-active {
+    outline: 3px solid var(--noir-accent);
+}
+.card-tag {
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #706b5c;
+    border-bottom: 1px dashed #706b5c;
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+}
+.card-title {
+    font-size: 1.1rem;
+    margin: 0 0 8px 0;
+}
+.card-body {
+    font-size: 0.88rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Right Column Climax Submission Terminal */
+.climax-dock {
+    background-color: #0d0e10;
+    padding: 24px;
+    border-left: 1px solid #23252b;
+    display: flex;
+    flex-direction: column;
+}
+.dock-title {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    color: var(--noir-danger);
+    letter-spacing: 1px;
+}
+.dock-warning {
+    font-size: 0.75rem;
+    color: var(--noir-text-muted);
+}
+.form-slot {
+    margin-bottom: 20px;
+}
+.form-slot label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--noir-text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+.empty-slot {
+    background-color: #14161a;
+    border: 1px dashed #3a3f4d;
+    padding: 12px;
+    font-size: 0.85rem;
+    color: var(--noir-text-muted);
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+}
+.filled-slot {
+    background-color: var(--noir-paper);
+    color: var(--noir-ink);
+    border: 1px solid var(--noir-accent);
+    padding: 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+}
+.submit-warrant-btn {
+    width: 100%;
+    background-color: #202228;
+    color: var(--noir-text-muted);
+    border: 1px solid #3a3f4d;
+    padding: 14px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.submit-warrant-btn:hover {
+    background-color: var(--noir-danger);
+    color: #ffffff;
+    border-color: var(--noir-danger);
+}
+
+/* Feedback Box Output Terminal */
+.terminal-box {
+    margin-top: 24px;
+    background-color: var(--noir-terminal);
+    border: 1px solid #283d2e;
+    padding: 12px;
+    border-radius: 2px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.8rem;
+    color: var(--noir-green);
+    min-height: 80px;
+    line-height: 1.4;
+}
+.terminal-box.error-state {
+    background-color: #241515;
+    border-color: #4a2323;
+    color: #ff5c5c;
+}
+.hidden { display: none; }

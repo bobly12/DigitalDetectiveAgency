@@ -9,5 +9,8 @@ namespace DigitalDetectiveAgency.Models.DTOs.CaseAttempt
 
         [Required]
         public int SuspectId { get; set; }
+        
+        public int SelectedEvidenceId { get; set; }
+        public int SelectedWitnessStatementId { get; set; }
     }
 }

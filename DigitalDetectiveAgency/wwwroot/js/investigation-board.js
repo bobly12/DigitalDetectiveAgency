@@ -1,62 +1,110 @@
-// State tracking object for selected elements
-const deductionMatrix = {
-    caseId: null,
+/**
+ * Digital Detective Agency - Investigation Board Logic
+ * Handles interactive desk selection and deduction form payload dispatch.
+ */
+
+// Global tracking object for the active hypothesis slots
+window.investigationState = {
     suspectId: null,
     evidenceId: null,
     witnessId: null
 };
 
-function selectItem(type, id, element) {
-    // Remove active styling flag from sibling cards of same type
-    const cards = document.querySelectorAll(`.${type}-card`);
-    cards.forEach(c => c.classList.remove('selected-active'));
+/**
+ * Handles the selection of evidence, witness transcripts, or suspect dossiers from the desk.
+ * @param {string} type - The asset archetype ('suspect', 'evidence', 'witness')
+ * @param {number} id - The database primary key identifier of the entity
+ * @param {HTMLElement} cardElement - The specific DOM element that was interacted with
+ */
+window.selectItem = function (type, id, cardElement) {
+    // 1. Manage active CSS highlight states on the workspace desk
+    document.querySelectorAll(`.desk-card[data-type="${type}"]`).forEach(card => {
+        card.classList.remove('selected-highlight');
+    });
+    cardElement.classList.add('selected-highlight');
 
-    // Wire selection to internal state dictionary
-    element.classList.add('selected-active');
-    deductionMatrix[`${type}Id`] = id;
+    // 2. Extract the item title to update the UI terminal readouts
+    const itemTitle = cardElement.querySelector('.card-title').textContent;
 
-    // Update the right-hand submission interface visually
-    const slot = document.getElementById(`slot-${type}`);
-    const itemTitle = element.querySelector('.card-title').innerText;
-    slot.className = "filled-slot";
-    slot.innerText = itemTitle;
-}
+    // 3. Route target elements and update state properties
+    const slotElement = document.getElementById(`slot-${type}`);
+    if (!slotElement) return;
 
-async function submitDeduction(event) {
+    // Update state state tracking metrics
+    window.investigationState[`${type}Id`] = id;
+
+    // Update slot layout to show selection instead of placeholder text
+    slotElement.classList.remove('empty-slot');
+    slotElement.classList.add('filled-slot');
+    slotElement.textContent = itemTitle;
+};
+
+/**
+ * Dispatches the accumulated hypothesis vectors to the API endpoint for validation.
+ * @param {Event} event - The form submission trigger event object
+ */
+window.submitDeduction = function (event) {
     event.preventDefault();
 
-    deductionMatrix.caseId = parseInt(document.getElementById('caseIdInput').value);
-    const feedbackBox = document.getElementById('terminal-feedback');
-    feedbackBox.classList.remove('hidden', 'error-state');
-    feedbackBox.innerText = "Processing clearance validation parameters...";
+    const feedbackTerminal = document.getElementById('terminal-feedback');
+    const caseId = parseInt(document.getElementById('caseIdInput').value, 10);
 
-    // Guard statement asserting whole logical triangle is complete
-    if (!deductionMatrix.suspectId || !deductionMatrix.evidenceId || !deductionMatrix.witnessId) {
-        feedbackBox.classList.add('error-state');
-        feedbackBox.innerText = "CRITICAL FAILURE: Hypothesis matrix components are incomplete.";
+    // Validate that a complete case hypothesis framework exists before tracking endpoint
+    if (!window.investigationState.suspectId || !window.investigationState.evidenceId || !window.investigationState.witnessId) {
+        showTerminalFeedback("❌ ERROR: MANDATE INCOMPLETE. You must select one Suspect, one Key Evidence piece, and one Contradictory Witness Transcript.", "error");
         return;
     }
 
-    try {
-        const response = await fetch('/api/investigation/accuse', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(deductionMatrix)
+    // Construct the data transmission object mirroring your backend endpoint expectations
+    const payload = {
+        caseId: caseId,
+        accusedSuspectId: window.investigationState.suspectId,
+        keyEvidenceId: window.investigationState.evidenceId,
+        falseWitnessId: window.investigationState.witnessId
+    };
+
+    showTerminalFeedback("📡 TRANSMITTING WARRANT AUTHORIZATION TO CENTRAL MAINFRAME...", "info");
+
+    // Execute the request dispatch to your controller endpoint
+    fetch(`/Case/VerifyDeduction`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // RequestVerificationToken handler for ASP.NET Core anti-forgery guardrails
+            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+        },
+        body: JSON.stringify(payload)
+    })
+        .then(async response => {
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || "Mainframe response dropped. Network validation malfunction.");
+            }
+            return data;
+        })
+        .then(data => {
+            if (data.isCorrect) {
+                showTerminalFeedback(`🎉 CASE SOLVED: ${data.message || "Warrant authorized. The culprit is in custody. Excellent work, Detective."}`, "success");
+                // Optional: Redirect or trigger post-game win state layouts here
+            } else {
+                showTerminalFeedback(`❌ ACCUSATION REJECTED: ${data.message || "Your hypothesis holds no water. The suspect's alibi remains solid."}`, "error");
+            }
+        })
+        .catch(error => {
+            showTerminalFeedback(`⚠️ SYSTEM ERROR: ${error.message}`, "error");
         });
+};
 
-        const result = await response.json();
+/**
+ * Renders status logs to the terminal box UI on the terminal dock component.
+ * @param {string} message - The structural log payload string to output
+ * @param {string} statusClass - Visual state variation ('info', 'success', 'error')
+ */
+function showTerminalFeedback(message, statusClass) {
+    const feedbackTerminal = document.getElementById('terminal-feedback');
+    if (!feedbackTerminal) return;
 
-        if (response.ok && result.success) {
-            feedbackBox.innerText = `SUCCESS // WARR_AUTH_01 \nScore: +${result.score}\n\n${result.message}`;
-            // Optional: Trigger game-over window or narrative unlock sequences here
-        } else {
-            feedbackBox.classList.add('error-state');
-            feedbackBox.innerText = `REJECTED // ERR_LOGICAL_MISMATCH\n\n${result.message || "Arrest parameters invalid."}`;
-        }
-    } catch (error) {
-        feedbackBox.classList.add('error-state');
-        feedbackBox.innerText = "SYSTEM ERROR: Connection timeout during security clearance validation.";
-    }
+    feedbackTerminal.classList.remove('hidden', 'terminal-info', 'terminal-success', 'terminal-error');
+    feedbackTerminal.classList.add(`terminal-${statusClass}`);
+    feedbackTerminal.textContent = message;
 }
